@@ -1,0 +1,51 @@
+Project for the exam of Computer Science for HEP, modules 4 and 5
+=================================================================
+
+Create a virtual machine on Google Cloud with the following characteristics:
+- 2 CPUs, 4 GB memory
+- CentOS Stream 8 operating system
+- 30 GB disk
+- under Advanced Options -> Security -> Access Management, add the following SSH key
+
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO3dlLZU37NgQofgLnxoQAYS/EnC8XS7BCd5oYGNpIwW chierici@infn.it
+
+On this VM install Docker and enable the service. Create the directory
+$HOME/containers/IMAP22, that will be the permanent storage for the next steps.
+
+Create a Docker image starting from Ubuntu 22.04, that includes all the tools
+and libraries (g++, cmake, SFML, TBB, ...) needed to develop, build and test the
+parallel application described below. Inside the container, the storage
+directory $HOME/containers/IMAP22 should be mounted on /workspace.
+
+The parallel application consists in the computation of the Mandelbrot set,
+starting from the sequential version available at
+https://github.com/giacomini/cshep2022, under `project`. The focus of the
+parallelization is the bi-dimensional iteration on the image pixels
+corresponding to the complex plane around the origin, to be transformed into a
+TBB parallel_for loop over a blocked_range2d. The parallel_for should use a
+simple_partitioner and try multiple values of the grain size.
+
+The output of the application includes:
+- an image in PNG format of the Mandelbrot set
+- a text file with two columns: the grain size and the execution time obtained
+  with that grain size
+
+Once the application is considered complete, build it in "Release mode" and be
+sure to store everything under the /workspace directory. Then create another
+Docker image starting from Ubuntu 22.04, that contains only what is needed to
+run the application (e.g. there is no need for the compiler and cmake). Run the
+image, mounting again $HOME/containers/IMAP22 in /workspace in the container;
+run the application, producing the requested output.
+
+Double check on the CentOS Stream 8 vitual machine that the requested 
+output is saved in $HOME/containers/IMAP22.
+
+Leave the virtual machine (with CentOS Stream 8) running and write an e-mail to
+andrea.chierici7@unibo.it and francesco.giacomini3@unibo.it with the following
+information:
+- public IP address of the virtual machine
+- the username for the login
+
+You'll be notified once we have evaluated your work, so that you can 
+switch the virtual machine off.

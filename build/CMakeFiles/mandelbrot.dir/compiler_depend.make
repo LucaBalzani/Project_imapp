@@ -517,6 +517,10 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
   /usr/include/c++/11/bits/istream.tcc \
   /usr/include/c++/11/bits/sstream.tcc \
   /usr/include/c++/11/iostream \
+  /usr/include/c++/11/fstream \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+  /usr/include/c++/11/bits/fstream.tcc \
   /usr/local/include/matplotlibcpp.h \
   /usr/include/python3.10/Python.h \
   /usr/include/python3.10/patchlevel.h \
@@ -839,6 +843,8 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
 /usr/include/python3.10/cpython/pymem.h:
 
 /usr/include/python3.10/pymath.h:
+
+/usr/include/python3.10/exports.h:
 
 /usr/include/python3.10/boolobject.h:
 
@@ -1636,6 +1642,8 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/SFML/Graphics/Glsl.hpp:
 
+/usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h:
+
 /usr/include/python3.10/pymacro.h:
 
 /usr/include/SFML/Graphics/Sprite.hpp:
@@ -1840,6 +1848,10 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/fp-logb.h:
 
+/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/avx512vbmi2vlintrin.h:
+
 /usr/include/SFML/Window/Sensor.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512vnniintrin.h:
@@ -1922,6 +1934,8 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/oneapi/tbb/partitioner.h:
 
+/usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h:
+
 /usr/include/oneapi/tbb/detail/_aligned_space.h:
 
 /usr/include/c++/11/bits/locale_classes.tcc:
@@ -1935,10 +1949,6 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
 /usr/include/oneapi/tbb/cache_aligned_allocator.h:
 
 /usr/include/c++/11/shared_mutex:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/avx512vbmi2vlintrin.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
 
 /usr/include/oneapi/tbb/info.h:
 
@@ -2004,6 +2014,12 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/istream:
 
+/usr/include/c++/11/fstream:
+
+/usr/include/c++/11/bits/fstream.tcc:
+
+/usr/include/asm-generic/posix_types.h:
+
 /usr/include/python3.10/Python.h:
 
 /usr/include/python3.10/patchlevel.h:
@@ -2017,7 +2033,3 @@ CMakeFiles/mandelbrot.dir/main.cpp.o: ../main.cpp \
 /usr/include/linux/stat.h:
 
 /usr/include/x86_64-linux-gnu/asm/types.h:
-
-/usr/include/asm-generic/posix_types.h:
-
-/usr/include/python3.10/exports.h:

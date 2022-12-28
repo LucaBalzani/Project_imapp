@@ -7,10 +7,9 @@
 #include <iostream>
 #include <string>
 #include <thread>
-#include <fstream>
 
-//#include <matplotlibcpp.h>
-//namespace plt = matplotlibcpp;
+#include <matplotlibcpp.h>
+namespace plt = matplotlibcpp;
 
 using Complex = std::complex<double>;
 
@@ -91,7 +90,7 @@ public:
 
 int main()
 {
-  int const display_width{800};
+  int const display_width{600};
   int const display_height = display_width; // MODIFICATO ERA int const display_height{600};
 
   Complex const top_left{-2.2, 1.5};
@@ -101,9 +100,9 @@ int main()
   auto const delta_x = diff.real() / display_width;
   auto const delta_y = diff.imag() / display_height;
 
-  /*sf::RenderWindow window(sf::VideoMode(display_width, display_height),
+  sf::RenderWindow window(sf::VideoMode(display_width, display_height),
                           "Mandelbrot Set");
-  window.setFramerateLimit(60);*/
+  window.setFramerateLimit(60);
 
   // sf::RenderWindow window_grain(sf::VideoMode(display_width, display_height), "Time vs Grain Size");
 
@@ -115,19 +114,18 @@ int main()
 
   ////ORIGINAL PART
   sf::Image image;
-  //image.create(window.getSize().x, window.getSize().y);
-  image.create(display_width, display_height);
+  image.create(window.getSize().x, window.getSize().y);
   sf::Texture texture;
   sf::Sprite sprite;
 
   // Vary the grain size of the parallel_for loop
-  for (int grain_size = 1; grain_size <= display_height /*/ 10*/; grain_size < 10 ? ++grain_size : grain_size+=10 /*++grain_size*/)
+  for (int grain_size = 1; grain_size <= display_height / 10; ++grain_size)
   {
     // Measure the time taken to process the image
     auto start = std::chrono::high_resolution_clock::now();
 
     tbb::parallel_for(
-        tbb::blocked_range2d<int>(0, display_height, grain_size, 0, display_width, grain_size),
+        tbb::blocked_range2d<int>(0, display_height, grain_size * 10, 0, display_width, grain_size * 10),
         [&](const tbb::blocked_range2d<int> &fragment)
         {
           for (int row = fragment.rows().begin(); row != fragment.rows().end(); ++row)
@@ -138,7 +136,7 @@ int main()
               image.setPixel(column, row, to_color(k));
             }
           }
-        }); //By default a simple_partitioner is used
+        });
 
     /*// Use tbb::parallel_for to process each row in parallel
     tbb::parallel_for(0, display_height, grain_size, [&](int row) {
@@ -157,9 +155,9 @@ int main()
 
     elapsed_times.emplace_back(grain_size, elapsed_time);
 
-    std::cout << "Grain size: " << grain_size << ", elapsed time: " << elapsed_time << " microseconds" << std::endl;
+    std::cout << "Grain size: " << grain_size * 10 << ", elapsed time: " << elapsed_time << " microseconds" << std::endl;
 
-    //window.clear();     ////////////////////////////////***********************************************
+    window.clear();
 
     /*for (int row = 0; row != display_height; ++row) {
       for (int column = 0; column != display_width; ++column) {
@@ -168,19 +166,19 @@ int main()
         window.draw(point);
       }
     }*/
-    /*texture.loadFromImage(image); //////////////////////////////// ***********************************************
+    texture.loadFromImage(image);
     sprite.setTexture(texture);
 
     window.draw(sprite);
 
-    window.display();*/
+    window.display();
 
-    if (grain_size != display_height && !(grain_size % 200))
+    if (grain_size != 60 && !(grain_size % 20))
     {
       std::string namefile = std::string("Mandelbrot_at_") + std::to_string(grain_size) + std::string(".png");
-      auto color = grain_size / 200.0;
+      auto color = grain_size / 20.0;
       tbb::parallel_for(
-          tbb::blocked_range2d<int>(0, display_height, grain_size, 0, display_width, grain_size),
+          tbb::blocked_range2d<int>(0, display_height, grain_size * 10, 0, display_width, grain_size * 10),
           [&](const tbb::blocked_range2d<int> &fragment)
           {
             for (int row = fragment.rows().begin(); row != fragment.rows().end(); ++row)
@@ -192,11 +190,11 @@ int main()
               }
             }
           });
-      /*window.clear();   //////////////////////////////// ***********************************************
+      window.clear();
       texture.loadFromImage(image);
       sprite.setTexture(texture);
       window.draw(sprite);
-      window.display();*/
+      window.display();
       image.saveToFile(namefile);
     }
 
@@ -204,44 +202,23 @@ int main()
     // std::this_thread::sleep_for(1000ms);
   }
 
-  sf::RenderWindow window(sf::VideoMode(display_width, display_height),
-                          "Mandelbrot Set");
-  window.setFramerateLimit(60);
-
-  window.clear();   
-  texture.loadFromImage(image);
-  sprite.setTexture(texture);
-  window.draw(sprite);
-  window.display();
-
   std::vector<int> grains;
   std::vector<double> times;
-  std::ofstream out("Time_vs_grain_size.txt", std::ios::out);
-  out<<"Grain size and execution time obtained\n\nGrain size\tExecution time [ms]\n\n";
   for (auto const& [grain_size, elapsed_time] : elapsed_times) {
-    grains.push_back(grain_size);
+    grains.push_back(grain_size*10);
     times.push_back(elapsed_time/1000.);
-    out<<grain_size<<"\t\t"<<elapsed_time/1000.<<'\n';
   }
 
   auto minimum_time = std::min_element(times.begin(),times.end());
   std::cout<<"\nThe minimum time of "<<times[std::distance(times.begin(), minimum_time)]<<" ms corresponding to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<".\n\n";
 
-  out<<"\nThe minimum execution time ("<<times[std::distance(times.begin(), minimum_time)]<<" ms) corresponds to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<'.';
-  out.close();
-
-  /*
   // Plot the data using matplotlib-cpp
-  plt::figure();
   plt::plot(grains, times);
   plt::xlabel("Grain size");
   plt::ylabel("Time [ms]");
-  plt::title("Time vs grain size");
   plt::grid(true);
-  //plt::legend();
   plt::save("Time_vs_grain_size.png");
   //plt::show();
-  */
   
   /*sf::RenderWindow window_grain(sf::VideoMode(601, 601), "Time vs Grain Size");
   sf::Image graph;

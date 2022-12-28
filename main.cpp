@@ -7,9 +7,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
-
-#include <matplotlibcpp.h>
-namespace plt = matplotlibcpp;
+#include <fstream>
 
 using Complex = std::complex<double>;
 
@@ -24,7 +22,7 @@ int mandelbrot(Complex const &c)
   return i;
 }
 
-auto to_color(int k, double opt = 0.0) /// MODIFICATA PER COLORARE DIVERSAMENTE
+auto to_color(int k, double opt = 0.0) 
 {
   if (!opt)
   {
@@ -39,59 +37,10 @@ auto to_color(int k, double opt = 0.0) /// MODIFICATA PER COLORARE DIVERSAMENTE
   }
 }
 
-/*sf::Image painter(sf::RenderWindow& window, int display_width, int display_height){
-  Complex const top_left{-2.2, 1.5};
-  Complex const lower_right{0.8, -1.5};
-  auto const diff = lower_right - top_left;
-
-  auto const delta_x = diff.real() / display_width;
-  auto const delta_y = diff.imag() / display_height;
-
-  window.setSize(sf::Vector2u(display_width, display_height));
-
-  sf::Image image;
-  image.create(window.getSize().x, window.getSize().y);
-
-  for (int row = 0; row != display_height; ++row)
-  {
-    for (int column = 0; column != display_width; ++column)
-    {
-      auto k = mandelbrot(top_left + Complex{delta_x * column, delta_y * row});
-      image.setPixel(column, row, to_color(k));
-    }
-  }
-
-  return image;
-}*/
-
-/*class Rendering
-{
-  int m_w;
-  int m_h;
-  std::vector<sf::Color> m_colors;
-
-public:
-  Rendering(int w, int h) : m_w{w}, m_h{h}, m_colors(w * h)
-  {
-  }
-  sf::Color const &at(int r, int c) const
-  {
-    assert(r >= 0 && r < m_h);
-    assert(c >= 0 && c < m_w);
-    return m_colors[r * m_w + c];
-  }
-  sf::Color &at(int r, int c)
-  {
-    assert(r >= 0 && r < m_h);
-    assert(c >= 0 && c < m_w);
-    return m_colors[r * m_w + c];
-  }
-};*/
-
 int main()
 {
-  int const display_width{600};
-  int const display_height = display_width; // MODIFICATO ERA int const display_height{600};
+  int const display_width{800};
+  int const display_height = display_width;
 
   Complex const top_left{-2.2, 1.5};
   Complex const lower_right{0.8, -1.5};
@@ -99,28 +48,16 @@ int main()
 
   auto const delta_x = diff.real() / display_width;
   auto const delta_y = diff.imag() / display_height;
-
-  /*sf::RenderWindow window(sf::VideoMode(display_width, display_height),
-                          "Mandelbrot Set");
-  window.setFramerateLimit(60);*/
-
-  // sf::RenderWindow window_grain(sf::VideoMode(display_width, display_height), "Time vs Grain Size");
 
   std::vector<std::pair<int, double>> elapsed_times;
 
-  // Rendering rendering(display_width, display_height);
-
-  //sf::RectangleShape point{sf::Vector2f{1.f, 1.f}};
-
-  ////ORIGINAL PART
   sf::Image image;
-  //image.create(window.getSize().x, window.getSize().y);
   image.create(display_width, display_height);
   sf::Texture texture;
   sf::Sprite sprite;
 
   // Vary the grain size of the parallel_for loop
-  for (int grain_size = 1; grain_size <= display_height /*/ 10*/; grain_size < 10 ? ++grain_size : grain_size+=10 /*++grain_size*/)
+  for (int grain_size = 1; grain_size <= display_height; grain_size < 10 ? ++grain_size : grain_size+=10 )
   {
     // Measure the time taken to process the image
     auto start = std::chrono::high_resolution_clock::now();
@@ -137,19 +74,7 @@ int main()
               image.setPixel(column, row, to_color(k));
             }
           }
-        });
-
-    /*// Use tbb::parallel_for to process each row in parallel
-    tbb::parallel_for(0, display_height, grain_size, [&](int row) {
-      tbb::parallel_for(0, display_width, grain_size, [&](int column){
-        auto k = mandelbrot(top_left + Complex{delta_x * column, delta_y * row});
-        image.setPixel(column, row, to_color(k));
-      });
-      //for (int column = 0; column != display_width; ++column) {
-      //  auto k = mandelbrot(top_left + Complex{delta_x * column, delta_y * row});
-      //  rendering.at(row, column) = to_color(k);
-      //}
-    });*/
+        }); //By default a simple_partitioner is used
 
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
@@ -157,22 +82,6 @@ int main()
     elapsed_times.emplace_back(grain_size, elapsed_time);
 
     std::cout << "Grain size: " << grain_size << ", elapsed time: " << elapsed_time << " microseconds" << std::endl;
-
-    //window.clear();     ////////////////////////////////***********************************************
-
-    /*for (int row = 0; row != display_height; ++row) {
-      for (int column = 0; column != display_width; ++column) {
-        point.setPosition(column, row);
-        point.setFillColor(rendering.at(row, column));
-        window.draw(point);
-      }
-    }*/
-    /*texture.loadFromImage(image); //////////////////////////////// ***********************************************
-    sprite.setTexture(texture);
-
-    window.draw(sprite);
-
-    window.display();*/
 
     if (grain_size != display_height && !(grain_size % 200))
     {
@@ -191,16 +100,8 @@ int main()
               }
             }
           });
-      /*window.clear();   //////////////////////////////// ***********************************************
-      texture.loadFromImage(image);
-      sprite.setTexture(texture);
-      window.draw(sprite);
-      window.display();*/
       image.saveToFile(namefile);
     }
-
-    // using namespace std::chrono_literals;
-    // std::this_thread::sleep_for(1000ms);
   }
 
   sf::RenderWindow window(sf::VideoMode(display_width, display_height),
@@ -215,67 +116,19 @@ int main()
 
   std::vector<int> grains;
   std::vector<double> times;
+  std::ofstream out("Time_vs_grain_size.txt", std::ios::out);
+  out<<"Grain size and execution time obtained\n\nGrain size\tExecution time [ms]\n\n";
   for (auto const& [grain_size, elapsed_time] : elapsed_times) {
     grains.push_back(grain_size);
     times.push_back(elapsed_time/1000.);
+    out<<grain_size<<"\t\t"<<elapsed_time/1000.<<'\n';
   }
 
   auto minimum_time = std::min_element(times.begin(),times.end());
   std::cout<<"\nThe minimum time of "<<times[std::distance(times.begin(), minimum_time)]<<" ms corresponding to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<".\n\n";
 
-  // Plot the data using matplotlib-cpp
-  plt::figure();
-  plt::plot(grains, times);
-  plt::xlabel("Grain size");
-  plt::ylabel("Time [ms]");
-  plt::title("Time vs grain size");
-  plt::grid(true);
-  //plt::legend();
-  plt::save("Time_vs_grain_size.png");
-  //plt::show();
-  
-  /*sf::RenderWindow window_grain(sf::VideoMode(601, 601), "Time vs Grain Size");
-  sf::Image graph;
-  graph.create(601, 601, sf::Color::White);
-
-  double maximum_time = 0.0;
-
-  for (auto const& [grain, time] : elapsed_times)
-  {
-    if (maximum_time < time) maximum_time = time;
-  }
-
-  window_grain.clear();
-  for (auto const& [grain, time] : elapsed_times)
-  {
-    sf::Vertex line[] = {
-          sf::Vertex({static_cast<float>(grain), 0.f}, sf::Color::Black),
-          sf::Vertex({static_cast<float>(grain), static_cast<float>(time * 1000)}, sf::Color::Black),
-      };
-      window_grain.draw(line, 2, sf::Lines);
-    //graph.setPixel(grain, time*600/maximum_time, sf::Color(0, 0, 0));
-  }
-  sf::Texture texture_grain;
-  texture_grain.loadFromImage(graph);
-  sf::Sprite sprite_grain;
-  sprite_grain.setTexture(texture_grain);
-  window_grain.draw(sprite_grain);
-  window_grain.display();*/
-
-  /*                                                        /////ORIGINAL PART
-  for (int row = 0; row != display_height; ++row)
-  {
-    for (int column = 0; column != display_width; ++column)
-    {
-      auto k = mandelbrot(top_left + Complex{delta_x * column, delta_y * row});
-      image.setPixel(column, row, to_color(k));
-    }
-  }
-
-  sf::Texture texture;
-  texture.loadFromImage(image);
-  sf::Sprite sprite;
-  sprite.setTexture(texture);*/
+  out<<"\nThe minimum execution time ("<<times[std::distance(times.begin(), minimum_time)]<<" ms) corresponds to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<'.';
+  out.close();
 
   while (window.isOpen())
   {
@@ -285,10 +138,10 @@ int main()
       if (event.type == sf::Event::Closed)
         window.close();
       if (event.type == sf::Event::KeyPressed)
-      { ///////////////////////////////////////////////
+      {
         if (event.key.code == sf::Keyboard::P)
-        {                              ////////////////////////////
-          std::string output_file{""}; /////////////////////////////////////
+        {
+          std::string output_file{""};
           std::cout << "Please insert the name of the png file where you want to save the image: ";
           std::cin >> output_file;
           if (output_file.size() > 5)
@@ -313,7 +166,7 @@ int main()
       }
     }
 
-    window.setKeyRepeatEnabled(false); //////////////////////////////////////
+    window.setKeyRepeatEnabled(false);
 
     window.clear();
 
