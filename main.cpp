@@ -174,7 +174,7 @@ int main()
 
     window.display();*/
 
-    if (grain_size != 600 && !(grain_size % 200))
+    if (grain_size != display_height && !(grain_size % 200))
     {
       std::string namefile = std::string("Mandelbrot_at_") + std::to_string(grain_size) + std::string(".png");
       auto color = grain_size / 200.0;
