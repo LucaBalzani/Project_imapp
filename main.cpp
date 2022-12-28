@@ -104,7 +104,7 @@ int main()
     }
   }
 
-  /*sf::RenderWindow window(sf::VideoMode(display_width, display_height),
+  sf::RenderWindow window(sf::VideoMode(display_width, display_height),
                           "Mandelbrot Set");
   window.setFramerateLimit(60);
 
@@ -112,7 +112,7 @@ int main()
   texture.loadFromImage(image);
   sprite.setTexture(texture);
   window.draw(sprite);
-  window.display();*/
+  window.display();
 
   std::vector<int> grains;
   std::vector<double> times;
@@ -130,9 +130,7 @@ int main()
   out<<"\nThe minimum execution time ("<<times[std::distance(times.begin(), minimum_time)]<<" ms) corresponds to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<'.';
   out.close();
 
-  image.saveToFile("mandelbrot.png");
-
-  /*while (window.isOpen())
+  while (window.isOpen())
   {
     sf::Event event;
     while (window.pollEvent(event))
@@ -178,5 +176,5 @@ int main()
 
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(15ms);
-  }*/
+  }
 }
