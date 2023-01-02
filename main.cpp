@@ -83,10 +83,10 @@ int main()
 
     std::cout << "Grain size: " << grain_size << ", elapsed time: " << elapsed_time << " microseconds" << std::endl;
 
-    if (grain_size != display_height && !(grain_size % 200))
+    if (grain_size != display_height && !(grain_size % 300))
     {
       std::string namefile = std::string("Mandelbrot_at_") + std::to_string(grain_size) + std::string(".png");
-      auto color = grain_size / 200.0;
+      auto color = grain_size / 300.0;
       tbb::parallel_for(
           tbb::blocked_range2d<int>(0, display_height, grain_size, 0, display_width, grain_size),
           [&](const tbb::blocked_range2d<int> &fragment)
@@ -103,16 +103,7 @@ int main()
       image.saveToFile(namefile);
     }
   }
-
-  /*sf::RenderWindow window(sf::VideoMode(display_width, display_height),
-                          "Mandelbrot Set");
-  window.setFramerateLimit(60);
-
-  window.clear();   
-  texture.loadFromImage(image);
-  sprite.setTexture(texture);
-  window.draw(sprite);
-  window.display();*/
+  image.saveToFile(static_cast<std::string>("Mandelbrot.png"));
 
   std::vector<int> grains;
   std::vector<double> times;
@@ -129,52 +120,5 @@ int main()
 
   out<<"\nThe minimum execution time ("<<times[std::distance(times.begin(), minimum_time)]<<" ms) corresponds to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<'.';
   out.close();
-
-  /*while (window.isOpen())
-  {
-    sf::Event event;
-    while (window.pollEvent(event))
-    {
-      if (event.type == sf::Event::Closed)
-        window.close();
-      if (event.type == sf::Event::KeyPressed)
-      {
-        if (event.key.code == sf::Keyboard::P)
-        {
-          std::string output_file{""};
-          std::cout << "Please insert the name of the png file where you want to save the image: ";
-          std::cin >> output_file;
-          if (output_file.size() > 5)
-          {
-            if (!output_file.compare(output_file.size() - 4, 4, static_cast<std::string>(".png")))
-            {
-              image.saveToFile(output_file);
-            }
-            else
-            {
-              output_file += static_cast<std::string>(".png");
-              image.saveToFile(output_file);
-            }
-          }
-          else
-          {
-            output_file += static_cast<std::string>(".png");
-            image.saveToFile(output_file);
-          }
-          std::cout << "Image saved as \"" << output_file << "\"." << std::endl;
-        }
-      }
-    }
-
-    window.setKeyRepeatEnabled(false);
-
-    window.clear();
-
-    window.draw(sprite);
-
-    window.display();
-
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(15ms);
-  }*/
+  
 }
