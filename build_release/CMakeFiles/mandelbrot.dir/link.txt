@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -O3 -DNDEBUG CMakeFiles/mandelbrot.dir/main.cpp.o -o mandelbrot  /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1 -ltbb /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1 
