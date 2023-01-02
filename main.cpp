@@ -53,8 +53,8 @@ int main()
 
   sf::Image image;
   image.create(display_width, display_height);
-  sf::Texture texture;
-  sf::Sprite sprite;
+  /*sf::Texture texture;
+  sf::Sprite sprite;*/
 
   // Vary the grain size of the parallel_for loop
   for (int grain_size = 1; grain_size <= display_height; grain_size < 10 ? ++grain_size : grain_size+=10 )
