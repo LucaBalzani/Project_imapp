@@ -9,6 +9,9 @@
 #include <thread>
 #include <fstream>
 
+#include <matplotlibcpp.h>
+namespace plt = matplotlibcpp;
+
 using Complex = std::complex<double>;
 
 int mandelbrot(Complex const &c)
@@ -53,8 +56,6 @@ int main()
 
   sf::Image image;
   image.create(display_width, display_height);
-  /*sf::Texture texture;
-  sf::Sprite sprite;*/
 
   // Vary the grain size of the parallel_for loop
   for (int grain_size = 1; grain_size <= display_height; grain_size < 10 ? ++grain_size : grain_size+=10 )
@@ -114,6 +115,15 @@ int main()
     times.push_back(elapsed_time/1000.);
     out<<grain_size<<"\t\t"<<elapsed_time/1000.<<'\n';
   }
+
+  // Plot the data using matplotlib-cpp
+  plt::figure();
+  plt::plot(grains, times);
+  plt::xlabel("Grain size");
+  plt::ylabel("Time [ms]");
+  plt::title("Time vs grain size");
+  plt::grid(true);
+  plt::save("Time_vs_grain_size.png");
 
   auto minimum_time = std::min_element(times.begin(),times.end());
   std::cout<<"\nThe minimum time of "<<times[std::distance(times.begin(), minimum_time)]<<" ms corresponding to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<".\n\n";
