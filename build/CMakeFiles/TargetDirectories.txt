@@ -1,3 +1,0 @@
-/home/luca/lab/UNIBO/Programming/Project/build/CMakeFiles/mandelbrot.dir
-/home/luca/lab/UNIBO/Programming/Project/build/CMakeFiles/edit_cache.dir
-/home/luca/lab/UNIBO/Programming/Project/build/CMakeFiles/rebuild_cache.dir
