@@ -1,4 +1,4 @@
-Project for the exam of Computer Science for HEP, modules 4 and 5
+Project for the Exam of Computer Science for HEP, modules 4 and 5
 =================================================================
 
 Create a virtual machine on Google Cloud with the following characteristics:
