@@ -66,8 +66,8 @@ To run the code, on the proper environment, one should just build the code:
 
 The output of the code is then saved in the current directory.
 The output includes 4 _png_ files and a _txt_ file:
-- Mandelbrot.png &#8594 Representation of the Mandelbrot set in red (latest grain size tested, 800 pixels),
-- Mandelbrot_at_300.png &#8594 Representation of the Mandelbrot set in green (grain size 300 pixels),
-- Mandelbrot_at_600.png &#8594 Representation of the Mandelbrot set in blue (grain size 600 pixels),
-- Time_vs_grain_size.png &#8594 Shape of the elapsed time as a function of the grain size considered,
-- Time_vs_grain_size.txt &rarr Elapsed times for the various grain sizes used.
+- Mandelbrot.png ⟶ Representation of the Mandelbrot set in red (latest grain size tested, 800 pixels),
+- Mandelbrot_at_300.png ⟶ Representation of the Mandelbrot set in green (grain size 300 pixels),
+- Mandelbrot_at_600.png ⟶ Representation of the Mandelbrot set in blue (grain size 600 pixels),
+- Time_vs_grain_size.png ⟶ Shape of the elapsed time as a function of the grain size considered,
+- Time_vs_grain_size.txt ⟶ Elapsed times for the various grain sizes used.
