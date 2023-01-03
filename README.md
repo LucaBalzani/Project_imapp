@@ -56,3 +56,18 @@ All of the other packages are needed in order to use the `matplotlib-cpp` librar
 
 When creating the image used for running the program the **g++** library may not be installed, as it shall not be used. 
 However all of the other libraries, including **cmake** are needed to have access to the `matplotlib-cpp` toolkit.
+
+## To run the code
+To run the code, on the proper environment, one should just build the code:
+
+    cmake -S . -B build_release -DCMAKE_BUILD_TYPE=Release
+    cmake --build build_release
+    build_release/mandelbrot
+
+The output of the code is then saved in the current directory.
+The output includes 4 _png_ files and a _txt_ file:
+- Mandelbrot.png -> Representation of the Mandelbrot set in red (latest grain size tested, 800 pixels),
+- Mandelbrot_at_300.png -> Representation of the Mandelbrot set in green (grain size 300 pixels),
+- Mandelbrot_at_600.png -> Representation of the Mandelbrot set in blue (grain size 600 pixels),
+- Time_vs_grain_size.png -> Shape of the elapsed time as a function of the grain size considered,
+- Time_vs_grain_size.txt -> Elapsed times for the various grain sizes used.
