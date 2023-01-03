@@ -16,7 +16,6 @@ The images are built via a Dockerfile which includes the instructions to install
 
 An example of the Dockerfile used to build the images is the following:
 
----
     FROM ubuntu:22.04
 
     RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
@@ -47,7 +46,6 @@ An example of the Dockerfile used to build the images is the following:
 
     WORKDIR /workspace
 
----
 
 The libraries **g++** and **cmake** are used to compile and build the project.
 The libraries libsfml-dev and libtbb-dev are needed to acces the graphical tools of __SFML__ and the parallelization functions of **TBB**.
