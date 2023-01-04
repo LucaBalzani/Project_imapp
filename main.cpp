@@ -61,7 +61,7 @@ int main()
   for (int grain_size = 1; grain_size <= display_height; grain_size < 10 ? ++grain_size : grain_size+=10 )
   {
     // Measure the time taken to process the image
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::steady_clock::now();
 
     tbb::parallel_for(
         tbb::blocked_range2d<int>(0, display_height, grain_size, 0, display_width, grain_size),
@@ -77,7 +77,7 @@ int main()
           }
         }); //By default a simple_partitioner is used
 
-    auto end = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::steady_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
     elapsed_times.emplace_back(grain_size, elapsed_time);
