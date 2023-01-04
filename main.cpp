@@ -9,9 +9,6 @@
 #include <thread>
 #include <fstream>
 
-#include <matplotlibcpp.h>
-namespace plt = matplotlibcpp;
-
 using Complex = std::complex<double>;
 
 int mandelbrot(Complex const &c)
@@ -25,7 +22,7 @@ int mandelbrot(Complex const &c)
   return i;
 }
 
-auto to_color(int k, double opt = 0.0) 
+auto to_color(int k, double opt = 0.0)
 {
   if (!opt)
   {
@@ -58,7 +55,7 @@ int main()
   image.create(display_width, display_height);
 
   // Vary the grain size of the parallel_for loop
-  for (int grain_size = 1; grain_size <= display_height; grain_size < 10 ? ++grain_size : grain_size+=10 )
+  for (int grain_size = 1; grain_size <= display_height; grain_size < 10 ? ++grain_size : grain_size += 10)
   {
     // Measure the time taken to process the image
     auto start = std::chrono::steady_clock::now();
@@ -75,7 +72,7 @@ int main()
               image.setPixel(column, row, to_color(k));
             }
           }
-        }); //By default a simple_partitioner is used
+        }); // By default a simple_partitioner is used
 
     auto end = std::chrono::steady_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
@@ -109,26 +106,67 @@ int main()
   std::vector<int> grains;
   std::vector<double> times;
   std::ofstream out("Time_vs_grain_size.txt", std::ios::out);
-  out<<"Grain size and execution time obtained\n\nGrain size\tExecution time [ms]\n\n";
-  for (auto const& [grain_size, elapsed_time] : elapsed_times) {
+  out << "Grain size and execution time obtained\n\nGrain size\tExecution time [ms]\n\n";
+  for (auto const &[grain_size, elapsed_time] : elapsed_times)
+  {
     grains.push_back(grain_size);
-    times.push_back(elapsed_time/1000.);
-    out<<grain_size<<"\t\t"<<elapsed_time/1000.<<'\n';
+    times.push_back(elapsed_time / 1000.);
+    out << grain_size << "\t\t" << elapsed_time / 1000. << '\n';
   }
 
-  // Plot the data using matplotlib-cpp
-  plt::figure();
-  plt::plot(grains, times);
-  plt::xlabel("Grain size");
-  plt::ylabel("Time [ms]");
-  plt::title("Time vs grain size");
-  plt::grid(true);
-  plt::save("Time_vs_grain_size.png");
+  sf::Image image_time_grain;
+  image_time_grain.create(display_width, display_height);
 
-  auto minimum_time = std::min_element(times.begin(),times.end());
-  std::cout<<"\nThe minimum time of "<<times[std::distance(times.begin(), minimum_time)]<<" ms corresponding to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<".\n\n";
+  // Set background colour to white
+  for (int x = 0; x < display_width; ++x)
+  {
+    for (int y = 0; y < display_height; ++y)
+    {
+      image_time_grain.setPixel(x, y, sf::Color::White);
+    }
+  }
 
-  out<<"\nThe minimum execution time ("<<times[std::distance(times.begin(), minimum_time)]<<" ms) corresponds to a grain size of "<<grains[std::distance(times.begin(), minimum_time)]<<".\n";
+  // Determine the minimum and maximum values for the time and grain size data
+  double timeMin = *std::min_element(times.begin(), times.end());
+  double timeMax = *std::max_element(times.begin(), times.end());
+  int grainMin = *std::min_element(grains.begin(), grains.end());
+  int grainMax = *std::max_element(grains.begin(), grains.end());
+
+  timeMin *= 0.95;
+  timeMax *= 1.05;
+  grainMin = -40;
+  grainMax *= 1.05;
+
+  const int radius = 3;
+  // Loop through the data points and plot them on the image
+  for (unsigned int i = 0; i < times.size(); ++i)
+  {
+    // Normalize the time and grain size values to the range [0, 1]
+    double g = (times[i] - timeMin) / (timeMax - timeMin);
+    double t = static_cast<double>((grains[i] - grainMin)) / (grainMax - grainMin);
+
+    // Map the normalized values to the range [0, width] and [height, 0] respectively
+    int x = static_cast<int>(t * display_width);
+    int y = static_cast<int>(display_height - g * display_height);
+
+    for (int dx = -radius; dx <= radius; ++dx)
+    {
+      for (int dy = -radius; dy <= radius; ++dy)
+      {
+        if (std::sqrt(dx * dx + dy * dy) <= radius && x + dx > 0 && y + dy > 0 && x + dx < display_width && y + dy < display_height)
+        {
+          image_time_grain.setPixel(x + dx, y + dy, sf::Color::Black);
+        }
+      }
+    }
+  }
+
+  // Save the image to a file
+  image_time_grain.saveToFile("Time_vs_grain_size.png");
+
+  auto minimum_time = std::min_element(times.begin(), times.end());
+  std::cout << "\nThe minimum time of " << times[std::distance(times.begin(), minimum_time)] << " ms corresponding to a grain size of " << grains[std::distance(times.begin(), minimum_time)] << ".\n\n";
+
+  out << "\nThe minimum execution time (" << times[std::distance(times.begin(), minimum_time)] << " ms) corresponds to a grain size of " << grains[std::distance(times.begin(), minimum_time)] << ".\n";
   out.close();
-
 }
