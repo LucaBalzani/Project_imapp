@@ -16,9 +16,9 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address -fno-omit-frame-
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
 add_executable(mandelbrot main.cpp)
-#target_link_libraries(mandelbrot PRIVATE sfml-graphics)
-#target_link_libraries(mandelbrot PRIVATE -ltbb)
+target_link_libraries(mandelbrot PRIVATE sfml-graphics)
+target_link_libraries(mandelbrot PRIVATE -ltbb)
 
-find_package(PythonLibs 3.6)
-target_include_directories(mandelbrot PRIVATE ${PYTHON_INCLUDE_DIRS})
-target_link_libraries(mandelbrot PRIVATE sfml-graphics tbb ${PYTHON_LIBRARIES})
+#find_package(PythonLibs 3.6)
+#target_include_directories(mandelbrot PRIVATE ${PYTHON_INCLUDE_DIRS})
+#target_link_libraries(mandelbrot PRIVATE sfml-graphics tbb ${PYTHON_LIBRARIES})
