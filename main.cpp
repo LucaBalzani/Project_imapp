@@ -60,6 +60,8 @@ int main()
     // Measure the time taken to process the image
     auto start = std::chrono::steady_clock::now();
 
+    tbb::simple_partitioner partitioner{};
+
     tbb::parallel_for(
         tbb::blocked_range2d<int>(0, display_height, grain_size, 0, display_width, grain_size),
         [&](const tbb::blocked_range2d<int> &fragment)
@@ -72,7 +74,8 @@ int main()
               image.setPixel(column, row, to_color(k));
             }
           }
-        }); // By default a simple_partitioner is used
+        },
+        partitioner);
 
     auto end = std::chrono::steady_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
@@ -97,7 +100,8 @@ int main()
                 image.setPixel(column, row, to_color(k, color));
               }
             }
-          });
+          },
+          partitioner);
       image.saveToFile(namefile);
     }
   }
