@@ -22,19 +22,9 @@ int mandelbrot(Complex const &c)
   return i;
 }
 
-auto to_color(int k, double opt = 0.0)
+auto to_color(int k)
 {
-  if (!opt)
-  {
-    return k < 256 ? sf::Color{static_cast<sf::Uint8>(10 * k), 0, 0} : sf::Color::Black;
-  }
-  else
-  {
-    if (opt == 1.0)
-      return k < 256 ? sf::Color{0, static_cast<sf::Uint8>(10 * k), 0} : sf::Color::Black;
-    else
-      return k < 256 ? sf::Color{0, 0, static_cast<sf::Uint8>(10 * k)} : sf::Color::Black;
-  }
+  return k < 256 ? sf::Color{static_cast<sf::Uint8>(10 * k), 0, 0} : sf::Color::Black;
 }
 
 int main()
@@ -84,10 +74,13 @@ int main()
 
     std::cout << "Grain size: " << grain_size << ", elapsed time: " << elapsed_time << " microseconds" << std::endl;
 
-    if (grain_size != display_height && !(grain_size % 300))
+    // To check that, indeed, at every iteration the Mandelbrot set is computed correctly, changing colour
+    if (!(grain_size % 300)) 
     {
       std::string namefile = std::string("Mandelbrot_at_") + std::to_string(grain_size) + std::string(".png");
-      auto color = grain_size / 300.0;
+      bool is300 = false;
+      if (grain_size == 300)
+        is300 = true;
       tbb::parallel_for(
           tbb::blocked_range2d<int>(0, display_height, grain_size, 0, display_width, grain_size),
           [&](const tbb::blocked_range2d<int> &fragment)
@@ -96,8 +89,19 @@ int main()
             {
               for (int column = fragment.cols().begin(); column != fragment.cols().end(); ++column)
               {
-                auto k = mandelbrot(top_left + Complex{delta_x * column, delta_y * row});
-                image.setPixel(column, row, to_color(k, color));
+                auto c = image.getPixel(column, row);
+                // if the point is black each RGB component is 0
+                if (is300)
+                {
+                  c.g = c.r;
+                  c.r = 0;
+                }
+                else
+                {
+                  c.b = c.r;
+                  c.r = 0;
+                }
+                image.setPixel(column, row, c);
               }
             }
           },
