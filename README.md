@@ -6,13 +6,14 @@ The main objective of the code is to parallelize the computations needed to obta
 In order to achieve this the `tbb::parallel_for` function is used, along with other structures from tbb (such as `tbb::blocked_range2d`, which allows to divide the two dimensional range of the image into subsets which can be dealt with separatly).
 
 A deeper study on the efficiency of the computation of the Mandelbrot set is also carried out by varying the grain size.
-In particular re-computing the Mandelbrot set dividing the complex plain which is considered in a changing number and size of slices.
+In particular re-computing the Mandelbrot set dividing the complex plain in slices which vary in size and number.
 
 The code is contained in the file *main.cpp* while the building options are in the *CMakeLists.txt* file, the file *project.txt* contains the text of the assignement.
 
 This code has been put on this virtual machine and can be executed by running the docker image `immagine_running`.
 
-The images are built via a Dockerfile which includes the instructions to install the packages needed to compile and execute the code, along with the creation of a directory required as volume which will then be linked to a local directory.
+The images (`immagine_running` and `immagine_compilazione`) are built via two Dockerfiles which include the instructions to install the packages needed to compile and execute the code, along with the creation of a directory required as volume which will then be linked to a local directory.
+The Dockerfiles for the images building can be found in the respective directories `dir_Dockerfile_compilation` and `dir_Dockerfile_running`.
 
 An example of the Dockerfile used to build the images is the following:
 
@@ -38,14 +39,14 @@ The git toolkit is installed to clone the directory https://github.com/LucaBalza
 When creating the image used for running the program the libraries **g++**, **cmake** and **git** may not be installed, as they are not used. 
 
 ## To run the code
-To run the code, on the proper environment, one should just build the code:
+To run the program, on the proper environment, one should just build the code and run it:
 
     cmake -S . -B build_release -DCMAKE_BUILD_TYPE=Release
     cmake --build build_release
     build_release/mandelbrot
 
 The output of the code is then saved in the current directory.
-The output includes 4 _png_ files and a _txt_ file:
+The output includes 4 _.png_ files and a _.txt_ file:
 - Mandelbrot.png ⟶ Representation of the Mandelbrot set in red (latest grain size tested, 800 pixels),
 - Mandelbrot_at_300.png ⟶ Representation of the Mandelbrot set in green (grain size 300 pixels),
 - Mandelbrot_at_600.png ⟶ Representation of the Mandelbrot set in blue (grain size 600 pixels),
