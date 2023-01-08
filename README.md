@@ -10,7 +10,7 @@ In particular re-computing the Mandelbrot set dividing the complex plain which i
 
 The code is contained in the file *main.cpp* while the building options are in the *CMakeLists.txt* file, the file *project.txt* contains the text of the assignement.
 
-This code has been put on this virtual machine and can be executed by running a docker image ...
+This code has been put on this virtual machine and can be executed by running the docker image `immagine_running`.
 
 The images are built via a Dockerfile which includes the instructions to install the packages needed to compile and execute the code, along with the creation of a directory required as volume which will then be linked to a local directory.
 
